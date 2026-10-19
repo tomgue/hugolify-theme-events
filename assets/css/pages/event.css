@@ -1,0 +1,16 @@
+/* pages/event.css */
+/*
+ * An event page's .summary rides the shared .card component: muted
+ * background, its own gap, media ratio. Only the date of the when-and-where
+ * card stays here — the surtitle pair above it (i18n the/until/from) and the
+ * long date (commons/time.html), line-height trimmed to keep the stack tight.
+ */
+@layer pages {
+  .page-events {
+    .summary {
+      .date {
+        line-height: 1;
+      }
+    }
+  }
+}
