@@ -1,7 +1,7 @@
-{{- $hasCategory := partial "func/HasTaxonomyAvailable" (dict "section" "events" "taxonomy" "events_categories") -}}
-{{- $hasPerson := partial "func/HasTaxonomyAvailable" (dict "section" "events" "taxonomy" "events_persons") -}}
+{{- /* The button that opens the events filters panel; the shared markup lives
+       in commons/filters/button.html. */ -}}
+{{- $hasCategory := partial "func/HasTaxonomyAvailable.html" (dict "section" "events" "taxonomy" "events_categories") -}}
+{{- $hasPerson := partial "func/HasTaxonomyAvailable.html" (dict "section" "events" "taxonomy" "events_persons") -}}
 {{- if or $hasCategory $hasPerson }}
-  <button class="btn btn-filter" type="button" data-bs-toggle="offcanvas" data-bs-target="#eventsFilters" aria-controls="eventsFilters">
-    {{- i18n "filter" -}}
-  </button>
+  {{ partial "commons/filters/button.html" . }}
 {{ end -}}

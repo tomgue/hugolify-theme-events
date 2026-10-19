@@ -1,4 +1,6 @@
-{{- $paginator := .Paginator.Pages -}}
+{{- /* The event list itself, paginated through func/GetPaginator.html —
+       shared with the blocks and the latest partials — then the nav. */ -}}
+{{- $paginator := (partial "func/GetPaginator.html" .).Pages }}
 {{- $abovethefold := cond (partial "func/HasImageHero.html" .) false true -}}
-{{ partial "events/items" (dict "pages" $paginator "abovethefold" $abovethefold) }}
+{{ partial "events/items.html" (dict "pages" $paginator "abovethefold" $abovethefold) }}
 {{ partial "nav/pagination.html" . }}

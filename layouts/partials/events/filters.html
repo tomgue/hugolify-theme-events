@@ -1,8 +1,9 @@
-{{ $hasCategory := partial "func/HasTaxonomyAvailable" (dict "section" "events" "taxonomy" "events_categories") }}
-{{ $hasPerson := partial "func/HasTaxonomyAvailable" (dict "section" "events" "taxonomy" "events_persons") }}
-{{ if or $hasCategory $hasPerson }}
-  <div class="filters offcanvas" tabindex="-1" id="eventsFilters" aria-labelledby="eventsFiltersLabel">
-    {{ partial "events/filters/header" . }}
-    {{ partial "events/filters/content" . }}
-  </div>
-{{ end }}
+{{- /* The events filters panel: commons/filters.html renders the dialog and its
+       header, this module only decides whether the section has anything to
+       filter on. Both taxonomies ship as their own module and are only read
+       when the site declares them (func/HasTaxonomyAvailable.html). */ -}}
+{{- $hasCategory := partial "func/HasTaxonomyAvailable.html" (dict "section" "events" "taxonomy" "events_categories") -}}
+{{- $hasPerson := partial "func/HasTaxonomyAvailable.html" (dict "section" "events" "taxonomy" "events_persons") -}}
+{{- if or $hasCategory $hasPerson }}
+  {{ partial "commons/filters.html" (dict "context" . "section" "events") }}
+{{- end }}

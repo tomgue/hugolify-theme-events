@@ -1,4 +1,10 @@
+{{- /* The event single page's sidebar: its summary card — the when and the
+       where, see events/summary.html — and the share links. The grid reserves
+       it a column whenever the page describes an event (params.event); pages
+       without one keep the plain reading layout. */ -}}
+{{- if isset .Params "event" }}
 <div class="sidebar" {{- partial "func/SetAnim.html" (dict "element" "sidebar") }}>
   {{ partial "events/summary.html" . }}
-  {{ partial "commons/share" . }}
+  {{ partial "commons/share.html" . }}
 </div>
+{{- end }}

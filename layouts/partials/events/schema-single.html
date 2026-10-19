@@ -1,59 +1,58 @@
-<script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    {{- with .Title }}
-      "name": {{ partial "func/PrepareData.html" . }},
-    {{- end -}}
+{{- /* Schema.org for an event page, see func/GetSchemaWebPage.html.
 
-    {{- with .Params.image }}
-      "image": {{ .src | absURL }},
-    {{- end -}}
+       The event is the page's main entity: its dates, the venue built from
+       the address the CMS writes (func/GetSchemaAddress.html), the CTA as an
+       Offer to book a seat, and the people behind it through the
+       events_persons taxonomy — a module of its own, only read when the
+       site declares it (func/GetSchemaTerms.html). */ -}}
+{{- $event := dict
+  "@type" "Event"
+  "@id" (printf "%s#event" .Permalink)
+  "name" (partial "func/PrepareData.html" .Title)
+-}}
 
-    {{- with .Content }}
-      "description": {{ partial "func/PrepareData.html" . }},
-    {{- else -}}
-      {{- with .Description }}
-        "description": {{ partial "func/PrepareData.html" . }},
-      {{ end -}}
-    {{- end -}}
+{{- with .Description -}}
+  {{- $event = merge $event (dict "description" (partial "func/PrepareData.html" .)) -}}
+{{- end -}}
 
-    {{- with .Params.event }}
-      {{- with .date_from }}
-      "startDate": {{ . }},
-      {{- end -}}
-      {{- with .date_to }}
-      "endDate": {{ . }},
-      {{- end -}}
-      {{- with .cta }}
-        "offers": {{ .url }},
-      {{- end -}}
-      {{- with .address }}
-        "location": {
-          "@type": "Place",
-          "address": {
-            "@type": "PostalAddress",
-            "addressCountry": {{ partial "func/PrepareData.html" .country }},
-            "addressLocality": {{ partial "func/PrepareData.html" .city }},
-            "postalCode": {{ partial "func/PrepareData.html" .zipcode }},
-            "streetAddress": {{ partial "func/PrepareData.html" .street }}
-          }
-        },
-      {{ end -}}
-    {{- end -}}
+{{- with partial "func/GetSchemaImage.html" .Params.image -}}
+  {{- $event = merge $event (dict "image" .) -}}
+{{- end -}}
 
-    {{- range .GetTerms "events_persons" }}
-      {{- $author :=  partial "func/GetRealPerson" . -}}
-      {{- with $author }}
-        "author": {
-          "@type": "Person",
-          "name": {{ partial "func/PrepareData.html" .Title }},
-          {{- with .Description }}
-            "description": {{ partial "func/PrepareData.html" . }},
-          {{ end }}
-          "url": {{ .Permalink }}
-        },
-      {{ end -}}
-    {{ end -}}
-  }
-</script>
+{{- with .Params.event -}}
+  {{- with .date_from -}}
+    {{- $event = merge $event (dict "startDate" (partial "func/GetSchemaDate.html" .)) -}}
+  {{- end -}}
+  {{- with .date_to -}}
+    {{- $event = merge $event (dict "endDate" (partial "func/GetSchemaDate.html" .)) -}}
+  {{- end -}}
+
+  {{- /* The venue: a Place reduced to its postal address, the shape a place
+         held in data has (func/GetSchemaPlace.html). */ -}}
+  {{- with partial "func/GetSchemaAddress.html" .address -}}
+    {{- $event = merge $event (dict "location" (dict "@type" "Place" "address" .)) -}}
+  {{- end -}}
+
+  {{- with .cta -}}
+    {{- $event = merge $event (dict "offers" (dict "@type" "Offer" "url" .url)) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* The people behind the event — its performers: the events_persons terms
+       resolve to the person pages they stand for. */ -}}
+{{- $performers := slice -}}
+{{- range partial "func/GetSchemaTerms.html" (dict "page" $ "taxonomy" "events_persons" "format" "page") -}}
+  {{- with partial "func/GetSchemaPerson.html" (dict "page" . "compact" true) -}}
+    {{- $performers = $performers | append . -}}
+  {{- end -}}
+{{- end -}}
+{{- with $performers -}}
+  {{- $event = merge $event (dict "performer" .) -}}
+{{- end -}}
+
+{{- $webpage := partial "func/GetSchemaWebPage.html" (dict
+  "page" .
+  "mainEntity" $event
+) -}}
+
+{{- partial "commons/jsonld.html" (slice $webpage $event) -}}

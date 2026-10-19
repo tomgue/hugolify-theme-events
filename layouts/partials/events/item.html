@@ -1,5 +1,7 @@
-<article class="event" itemscope itemtype="http://schema.org/Event" {{- partial "func/SetAnim.html" (dict "element" "item") }}>
-  {{ partial "events/item/content" . }}
-  {{ partial "events/item/metas" . }}
-  {{ partial "events/item/media" . }}
+{{- /* An event as a card in the list: the .item base does the layout, .event
+       only tunes it, through the tokens of assets/tokens/components. */ -}}
+<article class="item event" {{- partial "func/SetAnim.html" (dict "element" "item") }}>
+  {{ partial "events/item/content.html" . }}
+  {{ partial "events/item/metas.html" . }}
+  {{ partial "events/item/media.html" . }}
 </article>

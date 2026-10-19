@@ -1,3 +1,10 @@
+{{- /* The event's summary card — its second class pairs it with the shared
+       .card component: muted background, its own gap, media ratio. Content:
+       when it happens, read from the date_from/date_to pair as a span — the
+       from… until… surtitles — the CTA that books a seat (commons/cta.html),
+       where it happens (commons/address.html), and the featured image above
+       the fold. Everything comes from the front matter's event block; without
+       it, nothing prints. */ -}}
 {{- $context := . -}}
 {{- $the_date := false -}}
 {{- $start_date := false -}}
@@ -26,7 +33,7 @@
     {{- $the_date = $start_date -}}
   {{- end -}}
 
-<div class="summary">
+<div class="summary card">
   <div class="content">
     {{- if and $two_dates (not $same_day) -}}
       {{- with $start_date -}}
@@ -40,10 +47,10 @@
       <p class="date">{{ partial "commons/time.html" (dict "date" . "format" ":date_long") }}</p>
     {{- end -}}
 
-    {{ partial "commons/cta" .cta }}
-    
+    {{ partial "commons/cta.html" .cta }}
+
     {{- with .address -}}
-      <p class="surtitle">Lieu</p>
+      <p class="surtitle">{{ i18n "address.label" 1 }}</p>
       {{ partial "commons/address.html" (dict "address" . "direction" false) }}
     {{- end -}}
   </div>
