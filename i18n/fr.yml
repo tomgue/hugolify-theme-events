@@ -3,6 +3,7 @@ events:
   discover: Découvrir l’évènement
   latest: Derniers évènements
   latest_person: Derniers évènements de {{ .Person }}
+  latest_section: Nos derniers évènements
   list: Liste des évènements de cette personne
   list_person: Liste des évènements de {{ .Person }}
   more: Découvrir plus d’évènements

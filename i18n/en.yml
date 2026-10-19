@@ -3,6 +3,7 @@ events:
   discover: Discover event
   latest: Latest events
   latest_person: Latest events of {{ .Person }}
+  latest_section: Our latest events
   list: List of events by this person
   list_person: '{{ .Person }}’s events'
   more: Discover more events
